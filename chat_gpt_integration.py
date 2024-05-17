@@ -3,6 +3,7 @@ import json
 import os
 import random
 import time
+import json
 from openai import OpenAI
 from datetime import datetime
 openAI_models = None
@@ -162,7 +163,7 @@ def GetPromptJson(role, prompt, input_model,append_string) -> dict:
                     },
                 ],
             )
-            resp = dict(completion.choices[0].message.content)
+            resp = json.loads(completion.choices[0].message.content)
             save_prompt_to_file(resp)
             return resp 
         except:
