@@ -162,7 +162,7 @@ def GetPromptJson(role, prompt, input_model,append_string) -> dict:
                     },
                 ],
             )
-            resp = completion
+            resp = dict(completion.choices[0].message.content)
             save_prompt_to_file(resp)
             return resp 
         except:
