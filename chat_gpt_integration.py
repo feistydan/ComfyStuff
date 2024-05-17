@@ -129,6 +129,47 @@ def GetPrompt(role, prompt, input_model,append_string) -> str:
             print('Failed to talk to OpenAi. sleeping for 10 seconds and trying again')
             retryCounter += 1
             time.sleep(10)
+
+def GetPromptJson(role, prompt, input_model,append_string) -> dict:
+    client = OpenAI(
+        api_key=get_api_key(),
+    )
+
+    if role == "Random":
+        role_list= get_roles()
+        role = role_list[random.randint(2,len(role_list)-1)]
+
+    print("submitting prompt to OpenAi")
+    sb = prompt.strip()
+    if len(append_string) > 0 :
+        sb += f' - {append_string}'
+        
+    save_prompt_to_file(sb)
+    retryCounter = 0
+    while retryCounter < 3:
+        try:
+            completion = client.chat.completions.create(
+                model=input_model,
+                response_format={"type": "json_object"}
+                messages=[
+                    {
+                        "role": "system",
+                        "content": f"You are a {role} imitator",
+                    },
+                    {
+                        "role": "user",
+                        "content": f"{prompt}",
+                    },
+                ],
+            )
+            resp = completion
+            save_prompt_to_file(resp)
+            return resp 
+        except:
+            print('Failed to talk to OpenAi. sleeping for 10 seconds and trying again')
+            retryCounter += 1
+            time.sleep(10)
+        
         
 
 class ChatGptPrompt:
@@ -156,7 +197,7 @@ class ChatGptPrompt:
 
     OUTPUT_NODE = True
 
-    CATEGORY = "OpenAI"  # Define the category for the node
+    CATEGORY = "ComfyStuff"  # Define the category for the node
     
     EXECUTE='process'
 
@@ -166,6 +207,40 @@ class ChatGptPrompt:
         print(f'Returning Text: {text}')
         return (text,)
 
+class ChatGptPromptJson:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                # Multiline string input for the prompt
+                "prompt": ("STRING", {"multiline": True}),
+                "model": (get_gpt_models(), {"default": "gpt-3.5-turbo-1106"}),
+                "role": (get_roles(), {"default": "AI Assistant"})
+            },
+            "optional": {
+                "append_string": ("STRING", {"multiline": True}), 
+                "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+
+    FUNCTION = "process"
+
+    OUTPUT_NODE = True
+
+    CATEGORY = "ComfyStuff"  # Define the category for the node
+    
+    EXECUTE='process'
+
+    @staticmethod
+    def process(prompt,model,role,append_string,seed) -> dict:
+        d = GetPromptJson(role,prompt,model,append_string)
+        print(f'Returning Text: {d}')
+        return (d,)
 
 
 # A dictionary that contains all nodes you want to export with their names
