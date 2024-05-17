@@ -150,7 +150,7 @@ def GetPromptJson(role, prompt, input_model,append_string) -> dict:
         try:
             completion = client.chat.completions.create(
                 model=input_model,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
                 messages=[
                     {
                         "role": "system",
