@@ -227,7 +227,7 @@ class ChatGptPromptJson:
             },
         }
 
-    RETURN_TYPES = ("STRING",)
+    RETURN_TYPES = ("dictionary",)
 
     FUNCTION = "process"
 
