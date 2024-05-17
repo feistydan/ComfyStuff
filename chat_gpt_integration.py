@@ -247,9 +247,11 @@ class ChatGptPromptJson:
 # NOTE: names should be globally unique
 NODE_CLASS_MAPPINGS = {
     "ChatGptPrompt": ChatGptPrompt,
+    "ChatGptJsonPrompt": ChatGptPromptJson,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
     "ChatGptPrompt": "ChatGPT Prompt Node",
+    "ChatGptJsonPrompt": "ChatGPT Prompt Note with Json output "
 }
